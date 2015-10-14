@@ -5,6 +5,8 @@
 ** http://www.nullsoft.com/
 **/
 #include <windows.h>
+#include <stdlib.h>
+#include <strsafe.h>
 
 BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip);
 BOOL systray_del(HWND hwnd, UINT uID);
@@ -18,7 +20,7 @@ BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip)
   tnid.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
   tnid.uCallbackMessage = WM_USER;
   tnid.hIcon = hIcon;
-  strncpy(tnid.szTip,lpszTip,sizeof(tnid.szTip)-1);
+  StringCchCopy(tnid.szTip, _countof(tnid.szTip), lpszTip);
   return (Shell_NotifyIcon(NIM_ADD, &tnid));
 }
 

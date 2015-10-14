@@ -8,6 +8,9 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <richedit.h>
+#include <stdlib.h>
+#include <shlwapi.h>
+#include <strsafe.h>
 
 #include "resource.h"
 
@@ -269,7 +272,7 @@ static void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 					0,};
 				CHARFORMAT fmt={sizeof(fmt),};
 				SendMessage(hwnd_rich,EM_GETCHARFORMAT,1,(LPARAM)&fmt);
-				if (fmt.dwMask & CFM_FACE) strcpy(lf.lfFaceName,fmt.szFaceName);
+				if (fmt.dwMask & CFM_FACE) StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), fmt.szFaceName);
 				else lf.lfFaceName[0]=0;
 				if (fmt.dwMask & CFM_SIZE) lf.lfHeight=fmt.yHeight/15;
 				else lf.lfHeight=0;
@@ -299,7 +302,7 @@ static void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 					fmt.crTextColor=cf.rgbColors;
 					fmt.bPitchAndFamily=lf.lfPitchAndFamily;
 					fmt.bCharSet = lf.lfCharSet;
-					strcpy(fmt.szFaceName,lf.lfFaceName);
+					StringCchCopy(fmt.szFaceName, _countof(fmt.szFaceName), lf.lfFaceName);
 					SendMessage(hwnd_rich,EM_SETCHARFORMAT,SCF_SELECTION,(LPARAM)&fmt);
 				}
 			}
@@ -370,7 +373,7 @@ static int _r_i(char *name, int def)
 static void _w_i(char *name, int d)
 {
 	char str[120];
-	wsprintf(str,"%d",d);
+	StringCchPrintf(str, _countof(str), "%d",d);
 	WritePrivateProfileString(app_name,name,str,ini_file);
 }
 #define WI(x) _w_i(#x,( x ))
@@ -378,7 +381,7 @@ static void _w_i(char *name, int d)
 static void _r_s(char *name,char *data, int mlen)
 {
 	char buf[2048];
-	strcpy(buf,data);
+	StringCchCopy(buf,_countof(buf), data);
 	GetPrivateProfileString(app_name,name,buf,data,mlen,ini_file);
 }
 #define RS(x) (_r_s(#x,x,sizeof(x)))
@@ -393,15 +396,10 @@ static void _w_s(char *name, char *data)
 
 void config_read()
 {
-	char *p;
 	GetModuleFileName(hMainInstance,ini_file,sizeof(ini_file));
-	strcpy(text_file,ini_file);
-	p=ini_file+strlen(ini_file);
-	while (p >= ini_file && *p != '.') p--;
-	strcpy(++p,"ini");
-	p=text_file+strlen(text_file);
-	while (p >= text_file && *p != '.') p--;
-	strcpy(++p,"rtf");
+	StringCchCopy(text_file, _countof(text_file), ini_file);
+	PathRenameExtension(ini_file, ".ini");
+	PathRenameExtension(text_file, ".rtf");
 	RI(config_x);
 	RI(config_y);
 	RI(config_w);
