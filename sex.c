@@ -29,7 +29,6 @@ void config_write();
 
 HMENU hmenu_main;
 HWND hwnd_rich,hwnd_main;
-HINSTANCE hMainInstance;
 
 BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip);
 BOOL systray_del(HWND hwnd, UINT uID);
@@ -45,8 +44,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam,
 {
 	MSG msg;
 	HACCEL hAccel;
-	hMainInstance=hInstance;
-	hAccel = LoadAccelerators(hMainInstance,MAKEINTRESOURCE(IDR_ACCELERATOR1));
+	hAccel = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCELERATOR1));
 	if (!LoadLibrary("RICHED32.DLL"))
 	{
 		MessageBox(NULL, "Could not load RICHED32.DLL", NULL, MB_OK);
@@ -172,18 +170,19 @@ LRESULT CALLBACK Rich_WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
+	HINSTANCE hInstance = lpCreateStruct->hInstance;
 	hwnd_main=hwnd;
-	hmenu_main=LoadMenu(hMainInstance,MAKEINTRESOURCE(IDR_MENU1));
+	hmenu_main=LoadMenu(hInstance,MAKEINTRESOURCE(IDR_MENU1));
 	hmenu_main=GetSubMenu(hmenu_main,0);
 	config_read();
 	SetWindowLong(hwnd,GWL_STYLE,GetWindowLong(hwnd,GWL_STYLE)&~(WS_CAPTION));
 	SetWindowPos(hwnd, 0, 0,0, 0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_DRAWFRAME|SWP_NOACTIVATE);
 	SetWindowPos(hwnd, 0, config_x, config_y, config_w, config_h, SWP_NOACTIVATE|SWP_NOZORDER);
-	systray_add(hwnd,1024,LoadIcon(hMainInstance,MAKEINTRESOURCE(IDI_ICON1)),app_name);
+	systray_add(hwnd,1024,LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)),app_name);
 	hwnd_rich=CreateWindowEx(WS_EX_CLIENTEDGE,"RichEdit","",
 		WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|WS_HSCROLL|WS_VSCROLL,
 		config_border,config_border,config_w-config_border*2,config_h-config_border*2,
-		hwnd, NULL,hMainInstance,NULL);
+		hwnd, NULL,hInstance,NULL);
 	Rich_OldWndProc = (WNDPROC) GetWindowLong(hwnd_rich,GWL_WNDPROC);
 	SetWindowLong(hwnd_rich,GWL_WNDPROC,(int)Rich_WndProc);
 	if (!hwnd_rich) 
@@ -220,11 +219,11 @@ static void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized
 			config_write();
 		}
 		write_text();
-		SetPriorityClass(hMainInstance,IDLE_PRIORITY_CLASS);
+		SetPriorityClass(GetWindowInstance(hwnd),IDLE_PRIORITY_CLASS);
 	}
 	else
 	{
-		SetPriorityClass(hMainInstance,NORMAL_PRIORITY_CLASS);
+		SetPriorityClass(GetWindowInstance(hwnd),NORMAL_PRIORITY_CLASS);
 	}
 }
 
@@ -396,7 +395,7 @@ static void _w_s(char *name, char *data)
 
 void config_read()
 {
-	GetModuleFileName(hMainInstance,ini_file,sizeof(ini_file));
+	GetModuleFileName(GetModuleHandle(NULL),ini_file,sizeof(ini_file));
 	StringCchCopy(text_file, _countof(text_file), ini_file);
 	PathRenameExtension(ini_file, ".ini");
 	PathRenameExtension(text_file, ".rtf");
