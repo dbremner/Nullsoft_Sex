@@ -11,7 +11,7 @@ BOOL systray_del(HWND hwnd, UINT uID);
 
 BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip)
 {
-  NOTIFYICONDATA tnid;
+  NOTIFYICONDATA tnid = {0};
   tnid.cbSize = sizeof(NOTIFYICONDATA);
   tnid.hWnd = hwnd;
   tnid.uID = uID;
@@ -23,7 +23,7 @@ BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip)
 }
 
 BOOL systray_del(HWND hwnd, UINT uID) {
-  NOTIFYICONDATA tnid;
+  NOTIFYICONDATA tnid = {0};
   tnid.cbSize = sizeof(NOTIFYICONDATA);
   tnid.hWnd = hwnd;
   tnid.uID = uID;

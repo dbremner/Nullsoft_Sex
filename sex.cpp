@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmd
 
 BOOL InitApplication(HINSTANCE hInstance)
 {
-	WNDCLASS wc;	
+	WNDCLASS wc = {0};	
 	wc.style = CS_DBLCLKS|CS_VREDRAW|CS_HREDRAW;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
@@ -304,7 +304,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 		case IDM_BGCOLOR:
 			{
 				static COLORREF custcolors[16];
-				CHOOSECOLOR cs;
+				CHOOSECOLOR cs = {0};
 				cs.lStructSize = sizeof(cs);
 				cs.hwndOwner = hwnd;
 				cs.hInstance = 0;
