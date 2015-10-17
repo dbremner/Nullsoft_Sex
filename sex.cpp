@@ -10,8 +10,8 @@
 #include "resource.h"
 
 int moved=0;
-int config_w=300, config_h=200,config_x=50,config_y=50,config_border=4,
-	config_color=RGB(255,255,0), config_bcolor1=RGB(150,150,150), config_bcolor2=0;
+int config_w=300, config_h=200,config_x=50,config_y=50,config_border=4;
+COLORREF config_color=RGB(255,255,0), config_bcolor1=RGB(150,150,150), config_bcolor2=0;
 
 char app_name[] = "Sex";
 char text_file[MAX_PATH]="";
@@ -68,7 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmd
 		}
 	} // while(GetMessage...
 	
-	return msg.wParam;
+	return static_cast<int>(msg.wParam);
 } // WinMain
 
 BOOL InitApplication(HINSTANCE hInstance)
@@ -90,8 +90,8 @@ BOOL InitApplication(HINSTANCE hInstance)
 
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-	int style = 0;
-	int exStyle = WS_EX_TOOLWINDOW;
+	DWORD style = 0;
+	DWORD exStyle = WS_EX_TOOLWINDOW;
 	HWND hwnd;					
 	hwnd = CreateWindowEx(exStyle,app_name,app_name,style,0,0,1,1,NULL, NULL,hInstance,NULL);
 	
@@ -178,14 +178,14 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|WS_HSCROLL|WS_VSCROLL,
 		config_border,config_border,config_w-config_border*2,config_h-config_border*2,
 		hwnd, NULL,hInstance,NULL);
-	Rich_OldWndProc = (WNDPROC) GetWindowLong(hwnd_rich,GWL_WNDPROC);
-	SetWindowLong(hwnd_rich,GWL_WNDPROC,(int)Rich_WndProc);
+	Rich_OldWndProc = (WNDPROC) GetWindowLongPtr(hwnd_rich,GWLP_WNDPROC);
+	SetWindowLongPtr(hwnd_rich,GWLP_WNDPROC,(LONG_PTR)Rich_WndProc);
 	if (!hwnd_rich) 
 	{
 		MessageBox(hwnd,"Error creating RichEdit control","Error",MB_OK);
 		return 0;
 	}
-	SendMessage(hwnd_rich,EM_SETBKGNDCOLOR,FALSE,config_color);
+	SendMessage(hwnd_rich,EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
 	read_text();
 	return 1;
 }
@@ -272,10 +272,10 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 				else lf.lfHeight=0;
 				if (fmt.dwMask & CFM_COLOR) cf.rgbColors=fmt.crTextColor;
 				else cf.rgbColors=0xffffff;
-				lf.lfItalic=(fmt.dwEffects&CFE_ITALIC)?1:0;
+				lf.lfItalic=static_cast<BYTE>((fmt.dwEffects&CFE_ITALIC)?1:0);
 				lf.lfWeight=(fmt.dwEffects&CFE_BOLD)?FW_BOLD:FW_NORMAL;
-				lf.lfUnderline=(fmt.dwEffects&CFE_UNDERLINE)?1:0;
-				lf.lfStrikeOut=(fmt.dwEffects&CFE_STRIKEOUT)?1:0;
+				lf.lfUnderline=static_cast<BYTE>((fmt.dwEffects&CFE_UNDERLINE)?1:0);
+				lf.lfStrikeOut=static_cast<BYTE>((fmt.dwEffects&CFE_STRIKEOUT)?1:0);
 				lf.lfCharSet=DEFAULT_CHARSET;
 				lf.lfOutPrecision=OUT_DEFAULT_PRECIS;
 				lf.lfClipPrecision=CLIP_DEFAULT_PRECIS;
@@ -315,7 +315,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 				{
 					config_color=cs.rgbResult;
 					config_write();
-					SendMessage(hwnd_rich,EM_SETBKGNDCOLOR,FALSE,config_color);
+					SendMessage(hwnd_rich,EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
 				}
 			}
 		return;
@@ -361,7 +361,7 @@ static void OnPaint(HWND hwnd)
 
 static int _r_i(char *name, int def)
 {
-	return GetPrivateProfileInt(app_name,name,def,ini_file);
+	return static_cast<UINT>(GetPrivateProfileInt(app_name,name,def,ini_file));
 }
 #define RI(x) (( x ) = _r_i(#x,( x )))
 static void _w_i(char *name, int d)
@@ -372,7 +372,7 @@ static void _w_i(char *name, int d)
 }
 #define WI(x) _w_i(#x,( x ))
 
-static void _r_s(char *name,char *data, int mlen)
+static void _r_s(char *name,char *data, DWORD mlen)
 {
 	char buf[2048];
 	StringCchCopy(buf,_countof(buf), data);
@@ -406,7 +406,7 @@ void config_read()
 
 static HANDLE esFile;
 
-DWORD CALLBACK esCb(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb)
+DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb)
 {
 	if (dwCookie == 1) // write
 	{
