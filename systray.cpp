@@ -4,9 +4,7 @@
 ** Free for noncommercial use.
 ** http://www.nullsoft.com/
 **/
-#include <windows.h>
-#include <stdlib.h>
-#include <strsafe.h>
+#include "stdafx.h"
 
 BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip);
 BOOL systray_del(HWND hwnd, UINT uID);

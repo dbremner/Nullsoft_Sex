@@ -5,12 +5,7 @@
 ** http://www.nullsoft.com/
 **/
 
-#include <windows.h>
-#include <windowsx.h>
-#include <richedit.h>
-#include <stdlib.h>
-#include <shlwapi.h>
-#include <strsafe.h>
+#include "stdafx.h"
 
 #include "resource.h"
 
@@ -349,12 +344,12 @@ static void OnPaint(HWND hwnd)
 	GetClientRect(hwnd,&r);
 	hPen=CreatePen(PS_SOLID,0,config_bcolor2);
 	{
-		LOGBRUSH lb={BS_SOLID,config_bcolor1,};
+		LOGBRUSH lb={BS_SOLID,config_bcolor1};
 		hBrush=CreateBrushIndirect(&lb); 
 	}
 
-	hOldPen=SelectObject(hdc,hPen);
-	hOldBrush=SelectObject(hdc,hBrush);
+	hOldPen=(HPEN)SelectObject(hdc,hPen);
+	hOldBrush=(HBRUSH)SelectObject(hdc,hBrush);
 	Rectangle(hdc,r.left,r.top,r.right,r.bottom);
 	SelectObject(hdc,hOldPen);
 	SelectObject(hdc,hOldBrush);
@@ -415,11 +410,11 @@ DWORD CALLBACK esCb(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb)
 {
 	if (dwCookie == 1) // write
 	{
-		WriteFile(esFile,pbBuff,cb,pcb,NULL);
+		WriteFile(esFile,pbBuff,cb,(DWORD*)pcb,NULL);
 	}
 	else // read
 	{
-		ReadFile(esFile,pbBuff,cb,pcb,NULL);
+		ReadFile(esFile,pbBuff,cb,(DWORD*)pcb,NULL);
 	}
 	return 0;
 }
