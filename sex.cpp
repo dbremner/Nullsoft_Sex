@@ -35,7 +35,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszCmdParam, int nCmdShow) 
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmdParam*/, int nCmdShow) 
 {
 	MSG msg;
 	HACCEL hAccel;
@@ -204,7 +204,7 @@ static void OnClose(HWND hwnd)
 //	DestroyWindow(hwnd);
 }
 
-static void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
+static void OnActivate(HWND hwnd, UINT state, HWND /*hwndActDeact*/, BOOL /*fMinimized*/)
 {
 	if (state==WA_INACTIVE)
 	{
@@ -244,7 +244,7 @@ static UINT OnNCHitTest(HWND hwnd, int x, int y)
 	return HTCLIENT;
 }
 
-static void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 {
 	switch (id)
 	{
@@ -322,13 +322,13 @@ static void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	}
 }
 
-static void OnSize(HWND hwnd, UINT state, int cx, int cy)
+static void OnSize(HWND /*hwnd*/, UINT /*state*/, int cx, int cy)
 {
 	moved=1;
 	SetWindowPos(hwnd_rich, 0, config_border,config_border, cx-config_border*2,cy-config_border*2, SWP_NOACTIVATE|SWP_NOZORDER);
 }
 
-static void OnMove(HWND hwnd, int x, int y)
+static void OnMove(HWND /*hwnd*/, int /*x*/, int /*y*/)
 {
 	moved=1;
 }
