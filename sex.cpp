@@ -136,7 +136,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				break;
 				case WM_RBUTTONUP:
 					{
-					POINT p;
+					CPoint p;
 					GetCursorPos(&p);
 					SetForegroundWindow(hwnd);
 					TrackPopupMenu(hmenu_main,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,p.x,p.y,0,hwnd_main,NULL);
@@ -155,7 +155,7 @@ LRESULT CALLBACK Rich_WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
 	if (uMsg==WM_RBUTTONUP)
 	{
-		POINT p;
+		CPoint p;
 		GetCursorPos(&p);
 		TrackPopupMenu(hmenu_main,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,p.x,p.y,0,hwnd_main,NULL);
 	}
@@ -170,9 +170,10 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	hmenu_main=LoadMenu(hInstance,MAKEINTRESOURCE(IDR_MENU1));
 	hmenu_main=GetSubMenu(hmenu_main,0);
 	config_read();
-	SetWindowLong(hwnd,GWL_STYLE,GetWindowLong(hwnd,GWL_STYLE)&~(WS_CAPTION));
-	SetWindowPos(hwnd, 0, 0,0, 0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_DRAWFRAME|SWP_NOACTIVATE);
-	SetWindowPos(hwnd, 0, config_x, config_y, config_w, config_h, SWP_NOACTIVATE|SWP_NOZORDER);
+	CWindow wnd(hwnd);
+	wnd.SetWindowLong(GWL_STYLE, wnd.GetWindowLong(GWL_STYLE)&~(WS_CAPTION));
+	wnd.SetWindowPos(nullptr, 0,0, 0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_DRAWFRAME|SWP_NOACTIVATE);
+	wnd.SetWindowPos(nullptr, config_x, config_y, config_w, config_h, SWP_NOACTIVATE|SWP_NOZORDER);
 	systray_add(hwnd,1024,LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)),app_name);
 	hwnd_rich=CreateWindowEx(WS_EX_CLIENTEDGE,"RichEdit","",
 		WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|WS_HSCROLL|WS_VSCROLL,
@@ -224,11 +225,11 @@ static void OnActivate(HWND hwnd, UINT state, HWND /*hwndActDeact*/, BOOL /*fMin
 
 static UINT OnNCHitTest(HWND hwnd, int x, int y)
 {
-	POINT p;
-	RECT r;
-	p.x=x;p.y=y;
-	GetClientRect(hwnd,&r);
-	ScreenToClient(hwnd,&p);
+	CWindow wnd(hwnd);
+	CRect r;
+	wnd.GetClientRect(&r);
+	CPoint p(x, y);
+	wnd.ScreenToClient(&p);
 	if (p.x <= config_border && p.y <= config_border*3) return HTTOPLEFT;
 	if (p.x <= config_border*3 && p.y <= config_border) return HTTOPLEFT;
 	if (p.x >= r.right-config_border && p.y >= r.bottom-config_border*3) return HTBOTTOMRIGHT;
@@ -449,8 +450,9 @@ void write_text()
 
 void config_write()
 {
-	RECT r;
-	GetWindowRect(hwnd_main,&r);
+	CRect r;
+	CWindow wnd(hwnd_main);
+	wnd.GetWindowRect(&r);
 	config_x=r.left;
 	config_y=r.top;
 	config_w=r.right-r.left;
