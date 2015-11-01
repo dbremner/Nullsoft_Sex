@@ -122,6 +122,7 @@ static void OnPaint(HWND hwnd);
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	CWindow wnd{hwnd};
 	switch (uMsg) 
 	{
 		HANDLE_MSG(hwnd,WM_CREATE,OnCreate);
@@ -185,14 +186,15 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|WS_HSCROLL|WS_VSCROLL,
 		config_border,config_border,config_w-config_border*2,config_h-config_border*2,
 		hwnd, NULL,hInstance,NULL);
-	Rich_OldWndProc = (WNDPROC) GetWindowLongPtr(hwnd_rich,GWLP_WNDPROC);
-	SetWindowLongPtr(hwnd_rich,GWLP_WNDPROC,(LONG_PTR)Rich_WndProc);
+	CWindow wnd_rich{hwnd_rich};
+	Rich_OldWndProc = (WNDPROC) wnd_rich.GetWindowLongPtr(GWLP_WNDPROC);
+	wnd_rich.SetWindowLongPtr(GWLP_WNDPROC,(LONG_PTR)Rich_WndProc);
 	if (!hwnd_rich) 
 	{
-		MessageBox(hwnd,"Error creating RichEdit control","Error",MB_OK);
+		wnd.MessageBox("Error creating RichEdit control","Error",MB_OK);
 		return 0;
 	}
-	SendMessage(hwnd_rich,EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
+	wnd_rich.SendMessage(EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
 	read_text();
 	return 1;
 }
@@ -255,6 +257,7 @@ static UINT OnNCHitTest(HWND hwnd, int x, int y)
 static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 {
 	CWindow wnd{hwnd};
+	CWindow wnd_rich{hwnd_rich};
 	switch (id)
 	{
 		case IDM_ABOUT:
@@ -274,7 +277,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 					CF_EFFECTS|CF_SCREENFONTS|CF_INITTOLOGFONTSTRUCT,
 					0,};
 				CHARFORMAT fmt={sizeof(fmt),};
-				SendMessage(hwnd_rich,EM_GETCHARFORMAT,1,(LPARAM)&fmt);
+				wnd_rich.SendMessage(EM_GETCHARFORMAT,1,(LPARAM)&fmt);
 				if (fmt.dwMask & CFM_FACE) StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), fmt.szFaceName);
 				else lf.lfFaceName[0]=0;
 				if (fmt.dwMask & CFM_SIZE) lf.lfHeight=fmt.yHeight/15;
@@ -306,7 +309,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 					fmt.bPitchAndFamily=lf.lfPitchAndFamily;
 					fmt.bCharSet = lf.lfCharSet;
 					StringCchCopy(fmt.szFaceName, _countof(fmt.szFaceName), lf.lfFaceName);
-					SendMessage(hwnd_rich,EM_SETCHARFORMAT,SCF_SELECTION,(LPARAM)&fmt);
+					wnd_rich.SendMessage(EM_SETCHARFORMAT,SCF_SELECTION,(LPARAM)&fmt);
 				}
 			}
 		return;
@@ -324,7 +327,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 				{
 					config_color=cs.rgbResult;
 					config_write();
-					SendMessage(hwnd_rich,EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
+					wnd_rich.SendMessage(EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
 				}
 			}
 		return;
