@@ -171,10 +171,10 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	hmenu_main=GetSubMenu(hmenu_main,0);
 	config_read();
 	CWindow wnd(hwnd);
-	wnd.SetWindowLong(GWL_STYLE, wnd.GetWindowLong(GWL_STYLE)&~(WS_CAPTION));
+	wnd.SetWindowLong(GWL_STYLE, wnd.GetStyle()&~(WS_CAPTION));
 	wnd.SetWindowPos(nullptr, 0,0, 0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_DRAWFRAME|SWP_NOACTIVATE);
 	wnd.SetWindowPos(nullptr, config_x, config_y, config_w, config_h, SWP_NOACTIVATE|SWP_NOZORDER);
-	systray_add(hwnd,1024,LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)),app_name);
+	systray_add(hwnd,1024,AtlLoadIcon(IDI_ICON1),app_name);
 	hwnd_rich=CreateWindowEx(WS_EX_CLIENTEDGE,"RichEdit","",
 		WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|WS_HSCROLL|WS_VSCROLL,
 		config_border,config_border,config_w-config_border*2,config_h-config_border*2,
@@ -201,7 +201,8 @@ static void OnDestroy(HWND hwnd)
 
 static void OnClose(HWND hwnd)
 {
-	SetWindowPos(hwnd,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_DRAWFRAME|SWP_NOACTIVATE);
+	CWindow wnd;
+	wnd.SetWindowPos(HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_DRAWFRAME | SWP_NOACTIVATE);
 //	DestroyWindow(hwnd);
 }
 
