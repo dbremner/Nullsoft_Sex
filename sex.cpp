@@ -10,8 +10,14 @@
 #include "resource.h"
 
 int moved=0;
-int config_w=300, config_h=200,config_x=50,config_y=50,config_border=4;
-COLORREF config_color=RGB(255,255,0), config_bcolor1=RGB(150,150,150), config_bcolor2=0;
+int config_w = 300;
+int config_h = 200;
+int config_x = 50;
+int config_y = 50;
+int config_border = 4;
+COLORREF config_color = RGB(255, 255, 0);
+COLORREF config_bcolor1 = RGB(150, 150, 150);
+COLORREF config_bcolor2 = 0;
 
 char app_name[] = "Sex";
 char text_file[MAX_PATH]="";
@@ -23,7 +29,8 @@ void write_text();
 void config_write();
 
 HMENU hmenu_main;
-HWND hwnd_rich,hwnd_main;
+HWND hwnd_rich;
+HWND hwnd_main;
 
 BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip);
 BOOL systray_del(HWND hwnd, UINT uID);
@@ -38,8 +45,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmdParam*/, int nCmdShow) 
 {
 	MSG msg;
-	HACCEL hAccel;
-	hAccel = AtlLoadAccelerators(IDR_ACCELERATOR1);
+	HACCEL hAccel = AtlLoadAccelerators(IDR_ACCELERATOR1);
 	if (!LoadLibrary("RICHED32.DLL"))
 	{
 		MessageBox(nullptr, "Could not load RICHED32.DLL", nullptr, MB_OK);
@@ -92,8 +98,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	DWORD style = 0;
 	DWORD exStyle = WS_EX_TOOLWINDOW;
-	HWND hwnd;					
-	hwnd = CreateWindowEx(exStyle,app_name,app_name,style,0,0,1,1,NULL, NULL,hInstance,NULL);
+	HWND hwnd = CreateWindowEx(exStyle,app_name,app_name,style,0,0,1,1,NULL, NULL,hInstance,NULL);
 	
 	if (!hwnd) return FALSE;
 	
