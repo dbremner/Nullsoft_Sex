@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmd
 {
 	MSG msg;
 	HACCEL hAccel;
-	hAccel = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCELERATOR1));
+	hAccel = AtlLoadAccelerators(IDR_ACCELERATOR1);
 	if (!LoadLibrary("RICHED32.DLL"))
 	{
 		MessageBox(NULL, "Could not load RICHED32.DLL", NULL, MB_OK);
@@ -167,7 +167,7 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
 	HINSTANCE hInstance = lpCreateStruct->hInstance;
 	hwnd_main=hwnd;
-	hmenu_main=LoadMenu(hInstance,MAKEINTRESOURCE(IDR_MENU1));
+	hmenu_main=AtlLoadMenu(IDR_MENU1);
 	hmenu_main=GetSubMenu(hmenu_main,0);
 	config_read();
 	CWindow wnd(hwnd);
@@ -336,33 +336,30 @@ static void OnMove(HWND /*hwnd*/, int /*x*/, int /*y*/)
 
 static void OnPaint(HWND hwnd)
 {
-	PAINTSTRUCT ps;
-	HDC hdc;
 	HBRUSH hOldBrush,hBrush;
-	HPEN hPen, hOldPen;
-	RECT r;
-	hdc = BeginPaint(hwnd,&ps);
-	GetClientRect(hwnd,&r);
-	hPen=CreatePen(PS_SOLID,0,config_bcolor2);
+	CRect r;
+	CPaintDC hdc(hwnd);
+	CWindow wnd;
+	wnd.GetClientRect(&r);
+	HPEN hPen=CreatePen(PS_SOLID,0,config_bcolor2);
 	{
 		LOGBRUSH lb={BS_SOLID,config_bcolor1};
 		hBrush=CreateBrushIndirect(&lb); 
 	}
 
-	hOldPen=(HPEN)SelectObject(hdc,hPen);
-	hOldBrush=(HBRUSH)SelectObject(hdc,hBrush);
-	Rectangle(hdc,r.left,r.top,r.right,r.bottom);
-	SelectObject(hdc,hOldPen);
-	SelectObject(hdc,hOldBrush);
+	HPEN hOldPen=hdc.SelectPen(hPen);
+	hOldBrush=hdc.SelectBrush(hBrush);
+	hdc.Rectangle(&r);
+	hdc.SelectPen(hOldPen);
+	hdc.SelectBrush(hOldBrush);
 	DeleteObject(hPen);
 	DeleteObject(hBrush);
-	EndPaint(hwnd,&ps);
 }
 
 
 static int _r_i(char *name, int def)
 {
-	return static_cast<UINT>(GetPrivateProfileInt(app_name,name,def,ini_file));
+	return static_cast<int>(GetPrivateProfileInt(app_name,name,def,ini_file));
 }
 #define RI(x) (( x ) = _r_i(#x,( x )))
 static void _w_i(char *name, int d)
@@ -407,15 +404,15 @@ void config_read()
 
 static HANDLE esFile;
 
-DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb)
+DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
 {
 	if (dwCookie == 1) // write
 	{
-		WriteFile(esFile,pbBuff,cb,(DWORD*)pcb,NULL);
+		WriteFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb,NULL);
 	}
 	else // read
 	{
-		ReadFile(esFile,pbBuff,cb,(DWORD*)pcb,NULL);
+		ReadFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb,NULL);
 	}
 	return 0;
 }
