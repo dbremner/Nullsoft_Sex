@@ -424,7 +424,7 @@ DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
 void read_text()
 {
 	esFile=CreateFile(text_file,GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
-	if (esFile)
+	if (esFile != INVALID_HANDLE_VALUE)
 	{
 		EDITSTREAM es;
 		es.dwCookie=0;
@@ -437,7 +437,7 @@ void read_text()
 void write_text()
 {
 	esFile=CreateFile(text_file,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-	if (esFile) 
+	if (esFile != INVALID_HANDLE_VALUE) 
 	{
 		EDITSTREAM es;
 		es.dwCookie=1;
