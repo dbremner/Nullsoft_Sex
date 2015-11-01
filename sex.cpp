@@ -201,7 +201,7 @@ static void OnDestroy(HWND hwnd)
 
 static void OnClose(HWND hwnd)
 {
-	CWindow wnd;
+	CWindow wnd{hwnd};
 	wnd.SetWindowPos(HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_DRAWFRAME | SWP_NOACTIVATE);
 //	DestroyWindow(hwnd);
 }
@@ -248,7 +248,7 @@ static UINT OnNCHitTest(HWND hwnd, int x, int y)
 
 static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 {
-	CWindow wnd;
+	CWindow wnd{hwnd};
 	switch (id)
 	{
 		case IDM_ABOUT:
