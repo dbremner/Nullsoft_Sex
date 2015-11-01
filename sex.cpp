@@ -338,17 +338,16 @@ static void OnMove(HWND /*hwnd*/, int /*x*/, int /*y*/)
 
 static void OnPaint(HWND hwnd)
 {
-	HBRUSH hOldBrush,hBrush;
 	CRect r;
 	CPaintDC hdc(hwnd);
 	CWindow wnd(hwnd);
 	wnd.GetClientRect(&r);
 	HPEN hPen=CreatePen(PS_SOLID,0,config_bcolor2);
 	LOGBRUSH lb={BS_SOLID,config_bcolor1};
-	hBrush=CreateBrushIndirect(&lb);
+	HBRUSH hBrush=CreateBrushIndirect(&lb);
 
 	HPEN hOldPen=hdc.SelectPen(hPen);
-	hOldBrush=hdc.SelectBrush(hBrush);
+	HBRUSH hOldBrush=hdc.SelectBrush(hBrush);
 	hdc.Rectangle(&r);
 	hdc.SelectPen(hOldPen);
 	hdc.SelectBrush(hOldBrush);
