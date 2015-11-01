@@ -248,17 +248,18 @@ static UINT OnNCHitTest(HWND hwnd, int x, int y)
 
 static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 {
+	CWindow wnd;
 	switch (id)
 	{
 		case IDM_ABOUT:
-			MessageBox(hwnd,"Sex v0.1\n"
+			wnd.MessageBox("Sex v0.1\n"\
 				            "Copyright (C) 1998, Nullsoft Inc.","About sex",MB_OK);
 		return;
 		case IDM_CLOSE:
-			SendMessage(hwnd,WM_CLOSE,0,0);
+			wnd.SendMessage(WM_CLOSE,0,0);
 		return;
 		case IDM_QUIT:
-			DestroyWindow(hwnd);
+			wnd.DestroyWindow();
 		return;
 		case IDM_FONT:
 			{
