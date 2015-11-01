@@ -9,35 +9,35 @@
 
 #include "resource.h"
 
-int moved=0;
-int config_w = 300;
-int config_h = 200;
-int config_x = 50;
-int config_y = 50;
-int config_border = 4;
-COLORREF config_color = RGB(255, 255, 0);
-COLORREF config_bcolor1 = RGB(150, 150, 150);
-COLORREF config_bcolor2 = 0;
+static int moved=0;
+static int config_w = 300;
+static int config_h = 200;
+static int config_x = 50;
+static int config_y = 50;
+static int config_border = 4;
+static COLORREF config_color = RGB(255, 255, 0);
+static COLORREF config_bcolor1 = RGB(150, 150, 150);
+static COLORREF config_bcolor2 = 0;
 
-char app_name[] = "Sex";
-char text_file[MAX_PATH]="";
-char ini_file[MAX_PATH]="";
+static const char app_name[] = "Sex";
+static char text_file[MAX_PATH] = "";
+static char ini_file[MAX_PATH] = "";
 
-void config_read();
-void read_text();
-void write_text();
-void config_write();
+static void config_read();
+static void read_text();
+static void write_text();
+static void config_write();
 
-HMENU hmenu_main;
-HWND hwnd_rich;
-HWND hwnd_main;
+static HMENU hmenu_main;
+static HWND hwnd_rich;
+static HWND hwnd_main;
 
-BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip);
+BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPCSTR lpszTip);
 BOOL systray_del(HWND hwnd, UINT uID);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, int nCmdShow);
-BOOL InitApplication(HINSTANCE hInstance);
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
+static BOOL InitApplication(HINSTANCE hInstance);
+static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -77,7 +77,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmd
 	return static_cast<int>(msg.wParam);
 } // WinMain
 
-BOOL InitApplication(HINSTANCE hInstance)
+static BOOL InitApplication(HINSTANCE hInstance)
 {
 	WNDCLASS wc = {0};	
 	wc.style = CS_DBLCLKS|CS_VREDRAW|CS_HREDRAW;
@@ -94,7 +94,7 @@ BOOL InitApplication(HINSTANCE hInstance)
 	return TRUE;
 }
 
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	DWORD style = 0;
 	DWORD exStyle = WS_EX_TOOLWINDOW;
@@ -155,7 +155,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 }
 
-WNDPROC Rich_OldWndProc;
+static WNDPROC Rich_OldWndProc;
+
 LRESULT CALLBACK Rich_WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg==WM_RBUTTONUP)
@@ -390,7 +391,7 @@ static void _w_s(char *name, char *data)
 
 
 
-void config_read()
+static void config_read()
 {
 	GetModuleFileName(GetModuleHandle(nullptr),ini_file,sizeof(ini_file));
 	StringCchCopy(text_file, _countof(text_file), ini_file);
@@ -423,7 +424,7 @@ DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
  
 
 
-void read_text()
+static void read_text()
 {
 	esFile=CreateFile(text_file,GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 	if (esFile != INVALID_HANDLE_VALUE)
@@ -436,7 +437,7 @@ void read_text()
 	}
 }
 
-void write_text()
+static void write_text()
 {
 	esFile=CreateFile(text_file,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 	if (esFile != INVALID_HANDLE_VALUE) 
@@ -449,7 +450,7 @@ void write_text()
 	} else  MessageBox(hwnd_main,"Error writing .rtf", "Error",0);
 }
 
-void config_write()
+static void config_write()
 {
 	CRect r;
 	CWindow wnd(hwnd_main);

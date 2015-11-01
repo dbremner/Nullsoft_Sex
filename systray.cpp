@@ -6,10 +6,10 @@
 **/
 #include "stdafx.h"
 
-BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip);
+BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPCSTR lpszTip);
 BOOL systray_del(HWND hwnd, UINT uID);
 
-BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPSTR lpszTip)
+BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPCSTR lpszTip)
 {
   NOTIFYICONDATA tnid = {0};
   tnid.cbSize = sizeof(NOTIFYICONDATA);
