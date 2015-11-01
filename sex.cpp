@@ -344,10 +344,8 @@ static void OnPaint(HWND hwnd)
 	CWindow wnd;
 	wnd.GetClientRect(&r);
 	HPEN hPen=CreatePen(PS_SOLID,0,config_bcolor2);
-	{
-		LOGBRUSH lb={BS_SOLID,config_bcolor1};
-		hBrush=CreateBrushIndirect(&lb); 
-	}
+	LOGBRUSH lb={BS_SOLID,config_bcolor1};
+	hBrush=CreateBrushIndirect(&lb);
 
 	HPEN hOldPen=hdc.SelectPen(hPen);
 	hOldBrush=hdc.SelectBrush(hBrush);
