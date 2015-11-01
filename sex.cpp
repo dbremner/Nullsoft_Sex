@@ -42,24 +42,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmd
 	hAccel = AtlLoadAccelerators(IDR_ACCELERATOR1);
 	if (!LoadLibrary("RICHED32.DLL"))
 	{
-		MessageBox(NULL, "Could not load RICHED32.DLL", NULL, MB_OK);
+		MessageBox(nullptr, "Could not load RICHED32.DLL", nullptr, MB_OK);
 		return (FALSE);
 	}
 
 	if (!InitApplication(hInstance)) 
 	{
-		MessageBox(NULL, "Could not initialize application", NULL, MB_OK);
+		MessageBox(nullptr, "Could not initialize application", nullptr, MB_OK);
 		return (FALSE);
 	}
 
 	if (!InitInstance(hInstance, nCmdShow)) 
 	{
-		MessageBox(NULL, "Could not create window", NULL, MB_OK);
+		MessageBox(nullptr, "Could not create window", nullptr, MB_OK);
 		return (FALSE);
 	}
 
 	// message loop
-	while (GetMessage(&msg,NULL,0,0)) 
+	while (GetMessage(&msg, nullptr, 0, 0))
 	{
 		if (!TranslateAccelerator(hwnd_main,hAccel,&msg))
 		{
@@ -79,10 +79,10 @@ BOOL InitApplication(HINSTANCE hInstance)
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
-	wc.hIcon = NULL;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = NULL;
-	wc.lpszMenuName = NULL;
+	wc.hIcon = nullptr;
+	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wc.hbrBackground = nullptr;
+	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = app_name;
 	if (!RegisterClass(&wc)) return FALSE;
 	return TRUE;
@@ -389,7 +389,7 @@ static void _w_s(char *name, char *data)
 
 void config_read()
 {
-	GetModuleFileName(GetModuleHandle(NULL),ini_file,sizeof(ini_file));
+	GetModuleFileName(GetModuleHandle(nullptr),ini_file,sizeof(ini_file));
 	StringCchCopy(text_file, _countof(text_file), ini_file);
 	PathRenameExtension(ini_file, ".ini");
 	PathRenameExtension(text_file, ".rtf");
