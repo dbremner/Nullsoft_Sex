@@ -98,7 +98,7 @@ static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     const DWORD style = 0;
     const DWORD exStyle = WS_EX_TOOLWINDOW;
-	HWND hwnd = CreateWindowEx(exStyle,app_name,app_name,style,0,0,1,1,NULL, NULL,hInstance,NULL);
+	HWND hwnd = CreateWindowEx(exStyle,app_name,app_name,style,0,0,1,1, nullptr, nullptr,hInstance, nullptr);
 	
 	if (!hwnd) { return FALSE; }
 
@@ -149,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					CPoint p;
 					GetCursorPos(&p);
 					SetForegroundWindow(hwnd);
-					TrackPopupMenu(hmenu_main,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,p.x,p.y,0,hwnd_main,NULL);
+					TrackPopupMenu(hmenu_main,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,p.x,p.y,0,hwnd_main, nullptr);
 					}
 				break;
 			}
@@ -168,7 +168,7 @@ LRESULT CALLBACK Rich_WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	{
 		CPoint p;
 		GetCursorPos(&p);
-		TrackPopupMenu(hmenu_main,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,p.x,p.y,0,hwnd_main,NULL);
+		TrackPopupMenu(hmenu_main,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,p.x,p.y,0,hwnd_main, nullptr);
 	}
 	return CallWindowProc(Rich_OldWndProc,hwnd,uMsg,wParam,lParam);
 }
@@ -189,7 +189,7 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	hwnd_rich=CreateWindowEx(WS_EX_CLIENTEDGE,"RichEdit","",
 		WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|WS_HSCROLL|WS_VSCROLL,
 		config_border,config_border,config_w-config_border*2,config_h-config_border*2,
-		hwnd, NULL,hInstance,NULL);
+		hwnd, nullptr,hInstance, nullptr);
 	CWindow wnd_rich{hwnd_rich};
 	Rich_OldWndProc = (WNDPROC) wnd_rich.GetWindowLongPtr(GWLP_WNDPROC);
 	wnd_rich.SetWindowLongPtr(GWLP_WNDPROC,(LONG_PTR)Rich_WndProc);
@@ -277,7 +277,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 		case IDM_FONT:
 			{
 				LOGFONT lf={0,};
-				CHOOSEFONT cf={sizeof(cf),hwnd,0,&lf,0,
+				CHOOSEFONT cf={sizeof(cf),hwnd,nullptr,&lf,0,
 					CF_EFFECTS|CF_SCREENFONTS|CF_INITTOLOGFONTSTRUCT,
 					0,};
 				CHARFORMAT fmt={sizeof(fmt),};
@@ -332,7 +332,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 				CHOOSECOLOR cs = {0};
 				cs.lStructSize = sizeof(cs);
 				cs.hwndOwner = hwnd;
-				cs.hInstance = 0;
+				cs.hInstance = nullptr;
 				cs.rgbResult=config_color;
 				cs.lpCustColors = custcolors;
 				cs.Flags = CC_RGBINIT|CC_FULLOPEN;
@@ -350,7 +350,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 static void OnSize(HWND /*hwnd*/, UINT /*state*/, int cx, int cy)
 {
 	moved=1;
-	SetWindowPos(hwnd_rich, 0, config_border,config_border, cx-config_border*2,cy-config_border*2, SWP_NOACTIVATE|SWP_NOZORDER);
+	SetWindowPos(hwnd_rich, nullptr, config_border,config_border, cx-config_border*2,cy-config_border*2, SWP_NOACTIVATE|SWP_NOZORDER);
 }
 
 static void OnMove(HWND /*hwnd*/, int /*x*/, int /*y*/)
@@ -429,11 +429,11 @@ DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
 {
 	if (dwCookie == 1) // write
 	{
-		WriteFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb,NULL);
+		WriteFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb, nullptr);
 	}
 	else // read
 	{
-		ReadFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb,NULL);
+		ReadFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb, nullptr);
 	}
 	return 0;
 }
@@ -442,7 +442,7 @@ DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
 
 static void read_text()
 {
-	esFile=CreateFile(text_file,GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+	esFile=CreateFile(text_file,GENERIC_READ,0, nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (esFile != INVALID_HANDLE_VALUE)
 	{
 		EDITSTREAM es;
@@ -455,7 +455,7 @@ static void read_text()
 
 static void write_text()
 {
-	esFile=CreateFile(text_file,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	esFile=CreateFile(text_file,GENERIC_WRITE,0, nullptr,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (esFile != INVALID_HANDLE_VALUE) 
 	{
 		EDITSTREAM es;
