@@ -100,14 +100,18 @@ static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     const DWORD exStyle = WS_EX_TOOLWINDOW;
 	HWND hwnd = CreateWindowEx(exStyle,app_name,app_name,style,0,0,1,1,NULL, NULL,hInstance,NULL);
 	
-	if (!hwnd) return FALSE;
-	
-	if (nCmdShow ==	SW_SHOWMAXIMIZED)
-		ShowWindow(hwnd,SW_SHOWNORMAL);
-	else
-		ShowWindow(hwnd,nCmdShow);
+	if (!hwnd) { return FALSE; }
 
-	return TRUE;
+    if (nCmdShow ==	SW_SHOWMAXIMIZED)
+	{
+	    ShowWindow(hwnd,SW_SHOWNORMAL);
+	}
+	else
+	{
+	    ShowWindow(hwnd,nCmdShow);
+    }
+
+    return TRUE;
 }
 
 static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
@@ -239,16 +243,16 @@ static UINT OnNCHitTest(HWND hwnd, int x, int y)
 	wnd.GetClientRect(&r);
 	CPoint p(x, y);
 	wnd.ScreenToClient(&p);
-	if (p.x <= config_border && p.y <= config_border*3) return HTTOPLEFT;
-	if (p.x <= config_border*3 && p.y <= config_border) return HTTOPLEFT;
-	if (p.x >= r.right-config_border && p.y >= r.bottom-config_border*3) return HTBOTTOMRIGHT;
-	if (p.x >= r.right-config_border*3 && p.y >= r.bottom-config_border) return HTBOTTOMRIGHT;
-	if (p.x >= r.right-config_border && p.y <= config_border*3) return HTTOPRIGHT;
-	if (p.x >= r.right-config_border*3 && p.y <= config_border) return HTTOPRIGHT;
-	if (p.x <= config_border && p.y >= r.bottom-config_border*3) return HTBOTTOMLEFT;
-	if (p.x <= config_border*3 && p.y >= r.bottom-config_border) return HTBOTTOMLEFT;
-	if (p.y <= config_border) return HTCAPTION;
-	if (p.x <= config_border) return HTLEFT;
+	if (p.x <= config_border && p.y <= config_border*3) { return HTTOPLEFT; }
+    if (p.x <= config_border*3 && p.y <= config_border) return HTTOPLEFT;
+	if (p.x >= r.right-config_border && p.y >= r.bottom-config_border*3) { return HTBOTTOMRIGHT; }
+    if (p.x >= r.right-config_border*3 && p.y >= r.bottom-config_border) { return HTBOTTOMRIGHT; }
+    if (p.x >= r.right-config_border && p.y <= config_border*3) { return HTTOPRIGHT; }
+    if (p.x >= r.right-config_border*3 && p.y <= config_border) { return HTTOPRIGHT; }
+    if (p.x <= config_border && p.y >= r.bottom-config_border*3) { return HTBOTTOMLEFT; }
+    if (p.x <= config_border*3 && p.y >= r.bottom-config_border) { return HTBOTTOMLEFT; }
+    if (p.y <= config_border) { return HTCAPTION; }
+    if (p.x <= config_border) return HTLEFT;
 	if (p.y >= r.bottom-config_border) return HTBOTTOM;
 	if (p.x >= r.right-config_border) return HTRIGHT;
 	return HTCLIENT;
@@ -278,12 +282,21 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 					0,};
 				CHARFORMAT fmt={sizeof(fmt),};
 				wnd_rich.SendMessage(EM_GETCHARFORMAT,1,(LPARAM)&fmt);
-				if (fmt.dwMask & CFM_FACE) StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), fmt.szFaceName);
+				if (fmt.dwMask & CFM_FACE)
+				{
+				    StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), fmt.szFaceName);
+				}
 				else lf.lfFaceName[0]=0;
-				if (fmt.dwMask & CFM_SIZE) lf.lfHeight=fmt.yHeight/15;
-				else lf.lfHeight=0;
-				if (fmt.dwMask & CFM_COLOR) cf.rgbColors=fmt.crTextColor;
-				else cf.rgbColors=0xffffff;
+				if (fmt.dwMask & CFM_SIZE)
+				{
+				    lf.lfHeight=fmt.yHeight/15;
+				}
+				else { lf.lfHeight=0; }
+			    if (fmt.dwMask & CFM_COLOR)
+			    {
+			        cf.rgbColors=fmt.crTextColor;
+			    }
+			    else cf.rgbColors=0xffffff;
 				lf.lfItalic=static_cast<BYTE>((fmt.dwEffects&CFE_ITALIC)?1:0);
 				lf.lfWeight=(fmt.dwEffects&CFE_BOLD)?FW_BOLD:FW_NORMAL;
 				lf.lfUnderline=static_cast<BYTE>((fmt.dwEffects&CFE_UNDERLINE)?1:0);
@@ -297,14 +310,14 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 				if (ChooseFont(&cf))
 				{
 					fmt.dwMask=CFM_BOLD|CFM_COLOR|CFM_ITALIC|CFM_STRIKEOUT|CFM_UNDERLINE;
-					if (lf.lfFaceName[0]) fmt.dwMask|=CFM_FACE;
-					if (lf.lfHeight) fmt.dwMask|=CFM_SIZE;
+					if (lf.lfFaceName[0]) { fmt.dwMask|=CFM_FACE; }
+				    if (lf.lfHeight) fmt.dwMask|=CFM_SIZE;
 					fmt.dwEffects=0;
-					if (lf.lfItalic) fmt.dwEffects |= CFE_ITALIC;
-					if (lf.lfUnderline) fmt.dwEffects |= CFE_UNDERLINE;
-					if (lf.lfStrikeOut) fmt.dwEffects |= CFE_STRIKEOUT;
-					if (lf.lfWeight!=FW_NORMAL)fmt.dwEffects |= CFE_BOLD;
-					fmt.yHeight = cf.iPointSize*2;
+					if (lf.lfItalic) { fmt.dwEffects |= CFE_ITALIC; }
+				    if (lf.lfUnderline) { fmt.dwEffects |= CFE_UNDERLINE; }
+				    if (lf.lfStrikeOut) { fmt.dwEffects |= CFE_STRIKEOUT; }
+				    if (lf.lfWeight!=FW_NORMAL) { fmt.dwEffects |= CFE_BOLD; }
+				    fmt.yHeight = cf.iPointSize*2;
 					fmt.crTextColor=cf.rgbColors;
 					fmt.bPitchAndFamily=lf.lfPitchAndFamily;
 					fmt.bCharSet = lf.lfCharSet;
@@ -450,7 +463,7 @@ static void write_text()
 		es.pfnCallback=esCb;
 		SendMessage(hwnd_rich,EM_STREAMOUT,SF_RTF,(LPARAM) &es);
 		CloseHandle(esFile);
-	} else  MessageBox(hwnd_main,"Error writing .rtf", "Error",0);
+	} else { MessageBox(hwnd_main,"Error writing .rtf", "Error",0); }
 }
 
 static void config_write()
