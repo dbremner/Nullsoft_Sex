@@ -100,11 +100,11 @@ static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	if (!hwnd) { return FALSE; }
 
     if (nCmdShow ==	SW_SHOWMAXIMIZED)
-	{
+    {
 	    ShowWindow(hwnd,SW_SHOWNORMAL);
-	}
-	else
-	{
+    }
+    else
+    {
 	    ShowWindow(hwnd,nCmdShow);
     }
 
