@@ -240,9 +240,9 @@ static UINT OnNCHitTest(HWND hwnd, int x, int y)
 {
 	CWindow wnd(hwnd);
 	CRect r;
-	wnd.GetClientRect(&r);
+    (void)wnd.GetClientRect(&r);
 	CPoint p(x, y);
-	wnd.ScreenToClient(&p);
+	(void)wnd.ScreenToClient(&p);
 	if (p.x <= config_border && p.y <= config_border*3) { return HTTOPLEFT; }
     if (p.x <= config_border*3 && p.y <= config_border) return HTTOPLEFT;
 	if (p.x >= r.right-config_border && p.y >= r.bottom-config_border*3) { return HTBOTTOMRIGHT; }
@@ -363,7 +363,7 @@ static void OnPaint(HWND hwnd)
 	CRect r;
 	CPaintDC hdc(hwnd);
 	CWindow wnd(hwnd);
-	wnd.GetClientRect(&r);
+    (void)wnd.GetClientRect(&r);
 	HPEN hPen=CreatePen(PS_SOLID,0,config_bcolor2);
 	LOGBRUSH lb={BS_SOLID,config_bcolor1};
 	HBRUSH hBrush=CreateBrushIndirect(&lb);
@@ -470,7 +470,7 @@ static void config_write()
 {
 	CRect r;
 	CWindow wnd(hwnd_main);
-	wnd.GetWindowRect(&r);
+    (void)wnd.GetWindowRect(&r);
 	config_x=r.left;
 	config_y=r.top;
 	config_w=r.right-r.left;
