@@ -90,8 +90,8 @@ static BOOL InitApplication(HINSTANCE hInstance)
 	wc.hbrBackground = nullptr;
 	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = app_name;
-	if (!RegisterClass(&wc)) return FALSE;
-	return TRUE;
+	if (!RegisterClass(&wc)) { return FALSE; }
+    return TRUE;
 }
 
 static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
@@ -244,18 +244,18 @@ static UINT OnNCHitTest(HWND hwnd, int x, int y)
 	CPoint p(x, y);
 	(void)wnd.ScreenToClient(&p);
 	if (p.x <= config_border && p.y <= config_border*3) { return HTTOPLEFT; }
-    if (p.x <= config_border*3 && p.y <= config_border) return HTTOPLEFT;
-	if (p.x >= r.right-config_border && p.y >= r.bottom-config_border*3) { return HTBOTTOMRIGHT; }
+    if (p.x <= config_border*3 && p.y <= config_border) { return HTTOPLEFT; }
+    if (p.x >= r.right-config_border && p.y >= r.bottom-config_border*3) { return HTBOTTOMRIGHT; }
     if (p.x >= r.right-config_border*3 && p.y >= r.bottom-config_border) { return HTBOTTOMRIGHT; }
     if (p.x >= r.right-config_border && p.y <= config_border*3) { return HTTOPRIGHT; }
     if (p.x >= r.right-config_border*3 && p.y <= config_border) { return HTTOPRIGHT; }
     if (p.x <= config_border && p.y >= r.bottom-config_border*3) { return HTBOTTOMLEFT; }
     if (p.x <= config_border*3 && p.y >= r.bottom-config_border) { return HTBOTTOMLEFT; }
     if (p.y <= config_border) { return HTCAPTION; }
-    if (p.x <= config_border) return HTLEFT;
-	if (p.y >= r.bottom-config_border) return HTBOTTOM;
-	if (p.x >= r.right-config_border) return HTRIGHT;
-	return HTCLIENT;
+    if (p.x <= config_border) { return HTLEFT; }
+    if (p.y >= r.bottom-config_border) { return HTBOTTOM; }
+    if (p.x >= r.right-config_border) { return HTRIGHT; }
+    return HTCLIENT;
 }
 
 static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
@@ -286,8 +286,8 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 				{
 				    StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), fmt.szFaceName);
 				}
-				else lf.lfFaceName[0]=0;
-				if (fmt.dwMask & CFM_SIZE)
+				else { lf.lfFaceName[0]=0; }
+			    if (fmt.dwMask & CFM_SIZE)
 				{
 				    lf.lfHeight=fmt.yHeight/15;
 				}
@@ -296,8 +296,8 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 			    {
 			        cf.rgbColors=fmt.crTextColor;
 			    }
-			    else cf.rgbColors=0xffffff;
-				lf.lfItalic=static_cast<BYTE>((fmt.dwEffects&CFE_ITALIC)?1:0);
+			    else { cf.rgbColors=0xffffff; }
+			    lf.lfItalic=static_cast<BYTE>((fmt.dwEffects&CFE_ITALIC)?1:0);
 				lf.lfWeight=(fmt.dwEffects&CFE_BOLD)?FW_BOLD:FW_NORMAL;
 				lf.lfUnderline=static_cast<BYTE>((fmt.dwEffects&CFE_UNDERLINE)?1:0);
 				lf.lfStrikeOut=static_cast<BYTE>((fmt.dwEffects&CFE_STRIKEOUT)?1:0);
@@ -311,8 +311,8 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 				{
 					fmt.dwMask=CFM_BOLD|CFM_COLOR|CFM_ITALIC|CFM_STRIKEOUT|CFM_UNDERLINE;
 					if (lf.lfFaceName[0]) { fmt.dwMask|=CFM_FACE; }
-				    if (lf.lfHeight) fmt.dwMask|=CFM_SIZE;
-					fmt.dwEffects=0;
+				    if (lf.lfHeight) { fmt.dwMask|=CFM_SIZE; }
+				    fmt.dwEffects=0;
 					if (lf.lfItalic) { fmt.dwEffects |= CFE_ITALIC; }
 				    if (lf.lfUnderline) { fmt.dwEffects |= CFE_UNDERLINE; }
 				    if (lf.lfStrikeOut) { fmt.dwEffects |= CFE_STRIKEOUT; }
