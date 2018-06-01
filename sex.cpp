@@ -340,7 +340,6 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 					wnd_rich.SendMessage(EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
 				}
 			}
-		return;
 	}
 }
 
