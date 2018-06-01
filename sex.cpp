@@ -32,9 +32,6 @@ static HMENU hmenu_main;
 static HWND hwnd_rich;
 static HWND hwnd_main;
 
-BOOL systray_add(HWND hwnd, UINT uID, HICON hIcon, LPCSTR lpszTip);
-BOOL systray_del(HWND hwnd, UINT uID);
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,LPSTR lpszCmdParam, int nCmdShow);
 static BOOL InitApplication(HINSTANCE hInstance);
 static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);

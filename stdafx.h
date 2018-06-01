@@ -41,3 +41,5 @@
 #pragma warning (default:5027)
 #pragma warning (default:5038)
 #pragma warning (default:5039)
+
+#include "systray.h"
