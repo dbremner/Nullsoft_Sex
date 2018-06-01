@@ -170,6 +170,7 @@ LRESULT CALLBACK Rich_WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		GetCursorPos(&p);
 		TrackPopupMenu(hmenu_main,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,p.x,p.y,0,hwnd_main, nullptr);
 	}
+#pragma warning(suppress:5039) //this WNDPROC is from riched32.dll
 	return CallWindowProc(Rich_OldWndProc,hwnd,uMsg,wParam,lParam);
 }
 
