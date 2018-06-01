@@ -9,6 +9,12 @@
 #pragma warning (disable:4625) //copy ctor could not be generated
 #pragma warning (disable:4626) //assignment operator could not be generated
 #pragma warning (disable:4302) //truncation from A to B
+#pragma warning (disable:4668) //preprocessor symbol is not defined, replacing with 0
+#pragma warning (disable:4986)
+#pragma warning (disable:5026) //move ctor was implicitly deleted
+#pragma warning (disable:5027) //move assignment was implicitly deleted 
+#pragma warning (disable:5038) //fields are initialized out of order
+#pragma warning (disable:5039) // ptr or ref to potentially throwing func passed to C func
 #include <windows.h>
 #include <windowsx.h>
 #include <richedit.h>
@@ -29,3 +35,9 @@
 #pragma warning (default:4625)
 #pragma warning (default:4626)
 #pragma warning (default:4302)
+#pragma warning (default:4668)
+#pragma warning (default:4986)
+#pragma warning (default:5026)
+#pragma warning (default:5027)
+#pragma warning (default:5038)
+#pragma warning (default:5039)
