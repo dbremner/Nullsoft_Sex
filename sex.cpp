@@ -19,9 +19,9 @@ static COLORREF config_color = RGB(255, 255, 0);
 static COLORREF config_bcolor1 = RGB(150, 150, 150);
 static COLORREF config_bcolor2 = 0;
 
-static const char app_name[] = "Sex";
-static char text_file[MAX_PATH] = "";
-static char ini_file[MAX_PATH] = "";
+static const TCHAR app_name[] = _T("Sex");
+static TCHAR text_file[MAX_PATH] = _T("");
+static TCHAR ini_file[MAX_PATH] = _T("");
 
 static void config_read();
 static void read_text();
@@ -43,21 +43,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmd
 {
 	MSG msg;
 	HACCEL hAccel = AtlLoadAccelerators(IDR_ACCELERATOR1);
-	if (!LoadLibrary("RICHED32.DLL"))
+	if (!LoadLibrary(_T("RICHED32.DLL")))
 	{
-		MessageBox(nullptr, "Could not load RICHED32.DLL", nullptr, MB_OK);
+		MessageBox(nullptr, _T("Could not load RICHED32.DLL"), nullptr, MB_OK);
 		return (FALSE);
 	}
 
 	if (!InitApplication(hInstance)) 
 	{
-		MessageBox(nullptr, "Could not initialize application", nullptr, MB_OK);
+		MessageBox(nullptr, _T("Could not initialize application"), nullptr, MB_OK);
 		return (FALSE);
 	}
 
 	if (!InitInstance(hInstance, nCmdShow)) 
 	{
-		MessageBox(nullptr, "Could not create window", nullptr, MB_OK);
+		MessageBox(nullptr, _T("Could not create window"), nullptr, MB_OK);
 		return (FALSE);
 	}
 
@@ -183,7 +183,7 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	wnd.SetWindowPos(nullptr, 0,0, 0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_DRAWFRAME|SWP_NOACTIVATE);
 	wnd.SetWindowPos(nullptr, config_x, config_y, config_w, config_h, SWP_NOACTIVATE|SWP_NOZORDER);
 	systray_add(hwnd,1024,AtlLoadIcon(IDI_ICON1),app_name);
-	hwnd_rich=CreateWindowEx(WS_EX_CLIENTEDGE,"RichEdit","",
+	hwnd_rich=CreateWindowEx(WS_EX_CLIENTEDGE, _T("RichEdit"),_T(""),
 		WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|WS_HSCROLL|WS_VSCROLL,
 		config_border,config_border,config_w-config_border*2,config_h-config_border*2,
 		hwnd, nullptr,hInstance, nullptr);
@@ -192,7 +192,7 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	wnd_rich.SetWindowLongPtr(GWLP_WNDPROC,reinterpret_cast<LONG_PTR>(Rich_WndProc));
 	if (!hwnd_rich) 
 	{
-		wnd.MessageBox("Error creating RichEdit control","Error",MB_OK);
+		wnd.MessageBox(_T("Error creating RichEdit control"),_T("Error"),MB_OK);
 		return 0;
 	}
 	wnd_rich.SendMessage(EM_SETBKGNDCOLOR,FALSE,static_cast<LPARAM>(config_color));
@@ -262,8 +262,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 	switch (id)
 	{
 		case IDM_ABOUT:
-			wnd.MessageBox("Sex v0.1\n"\
-				            "Copyright (C) 1998, Nullsoft Inc.","About sex",MB_OK);
+			wnd.MessageBox(_T("Sex v0.1\nCopyright (C) 1998, Nullsoft Inc."),_T("About sex"),MB_OK);
 		return;
 		case IDM_CLOSE:
 			wnd.SendMessage(WM_CLOSE,0,0);
@@ -374,28 +373,28 @@ static void OnPaint(HWND hwnd)
 }
 
 
-static int _r_i(char *name, int def)
+static int _r_i(LPTSTR name, int def)
 {
 	return static_cast<int>(GetPrivateProfileInt(app_name,name,def,ini_file));
 }
 #define RI(x) (( x ) = _r_i(#x,( x )))
-static void _w_i(char *name, int d)
+static void _w_i(LPTSTR name, int d)
 {
-	char str[120];
-	StringCchPrintf(str, _countof(str), "%d",d);
+	TCHAR str[120];
+	StringCchPrintf(str, _countof(str), _T("%d"),d);
 	WritePrivateProfileString(app_name,name,str,ini_file);
 }
 #define WI(x) _w_i(#x,( x ))
 
-static void _r_s(char *name,char *data, DWORD mlen)
+static void _r_s(LPTSTR name, LPTSTR data, DWORD mlen)
 {
-	char buf[2048];
+	TCHAR buf[2048];
 	StringCchCopy(buf,_countof(buf), data);
 	GetPrivateProfileString(app_name,name,buf,data,mlen,ini_file);
 }
-#define RS(x) (_r_s(#x,x,sizeof(x)))
+#define RS(x) (_r_s(#x,x,_countof(x)))
 
-static void _w_s(char *name, char *data)
+static void _w_s(LPTSTR name, LPTSTR data)
 {
 	WritePrivateProfileString(app_name,name,data,ini_file);
 }
@@ -405,10 +404,10 @@ static void _w_s(char *name, char *data)
 
 static void config_read()
 {
-	GetModuleFileName(GetModuleHandle(nullptr),ini_file,sizeof(ini_file));
+	GetModuleFileName(GetModuleHandle(nullptr),ini_file,_countof(ini_file));
 	StringCchCopy(text_file, _countof(text_file), ini_file);
-	PathRenameExtension(ini_file, ".ini");
-	PathRenameExtension(text_file, ".rtf");
+	PathRenameExtension(ini_file, _T(".ini"));
+	PathRenameExtension(text_file, _T(".rtf"));
 	RI(config_x);
 	RI(config_y);
 	RI(config_w);
@@ -459,7 +458,7 @@ static void write_text()
 		es.pfnCallback=esCb;
 		SendMessage(hwnd_rich,EM_STREAMOUT,SF_RTF,reinterpret_cast<LPARAM>(&es));
 		CloseHandle(esFile);
-	} else { MessageBox(hwnd_main,"Error writing .rtf", "Error",0); }
+	} else { MessageBox(hwnd_main,_T("Error writing .rtf"), _T("Error"),0); }
 }
 
 static void config_write()
