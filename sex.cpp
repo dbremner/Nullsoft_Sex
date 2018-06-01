@@ -189,8 +189,8 @@ static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		config_border,config_border,config_w-config_border*2,config_h-config_border*2,
 		hwnd, nullptr,hInstance, nullptr);
 	CWindow wnd_rich{hwnd_rich};
-	Rich_OldWndProc = (WNDPROC) wnd_rich.GetWindowLongPtr(GWLP_WNDPROC);
-	wnd_rich.SetWindowLongPtr(GWLP_WNDPROC,(LONG_PTR)Rich_WndProc);
+	Rich_OldWndProc = reinterpret_cast<WNDPROC>(wnd_rich.GetWindowLongPtr(GWLP_WNDPROC));
+	wnd_rich.SetWindowLongPtr(GWLP_WNDPROC,reinterpret_cast<LONG_PTR>(Rich_WndProc));
 	if (!hwnd_rich) 
 	{
 		wnd.MessageBox("Error creating RichEdit control","Error",MB_OK);
@@ -279,7 +279,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 					CF_EFFECTS|CF_SCREENFONTS|CF_INITTOLOGFONTSTRUCT,
 					0,};
 				CHARFORMAT fmt={sizeof(fmt),};
-				wnd_rich.SendMessage(EM_GETCHARFORMAT,1,(LPARAM)&fmt);
+				wnd_rich.SendMessage(EM_GETCHARFORMAT,1,reinterpret_cast<LPARAM>(&fmt));
 				if (fmt.dwMask & CFM_FACE)
 				{
 				    StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), fmt.szFaceName);
@@ -320,7 +320,7 @@ static void OnCommand(HWND hwnd, int id, HWND /*hwndCtl*/, UINT /*codeNotify*/)
 					fmt.bPitchAndFamily=lf.lfPitchAndFamily;
 					fmt.bCharSet = lf.lfCharSet;
 					StringCchCopy(fmt.szFaceName, _countof(fmt.szFaceName), lf.lfFaceName);
-					wnd_rich.SendMessage(EM_SETCHARFORMAT,SCF_SELECTION,(LPARAM)&fmt);
+					wnd_rich.SendMessage(EM_SETCHARFORMAT,SCF_SELECTION,reinterpret_cast<LPARAM>(&fmt));
 				}
 			}
 		return;
@@ -427,11 +427,11 @@ DWORD CALLBACK esCb(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
 {
 	if (dwCookie == 1) // write
 	{
-		WriteFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb, nullptr);
+		WriteFile(esFile,pbBuff,static_cast<DWORD>(cb),reinterpret_cast<DWORD*>(pcb), nullptr);
 	}
 	else // read
 	{
-		ReadFile(esFile,pbBuff,(DWORD)cb,(DWORD*)pcb, nullptr);
+		ReadFile(esFile,pbBuff,static_cast<DWORD>(cb),reinterpret_cast<DWORD*>(pcb), nullptr);
 	}
 	return 0;
 }
@@ -446,7 +446,7 @@ static void read_text()
 		EDITSTREAM es;
 		es.dwCookie=0;
 		es.pfnCallback=esCb;
-		SendMessage(hwnd_rich,EM_STREAMIN,SF_RTF,(LPARAM) &es);
+		SendMessage(hwnd_rich,EM_STREAMIN,SF_RTF,reinterpret_cast<LPARAM>(&es));
 		CloseHandle(esFile);
 	}
 }
@@ -459,7 +459,7 @@ static void write_text()
 		EDITSTREAM es;
 		es.dwCookie=1;
 		es.pfnCallback=esCb;
-		SendMessage(hwnd_rich,EM_STREAMOUT,SF_RTF,(LPARAM) &es);
+		SendMessage(hwnd_rich,EM_STREAMOUT,SF_RTF,reinterpret_cast<LPARAM>(&es));
 		CloseHandle(esFile);
 	} else { MessageBox(hwnd_main,"Error writing .rtf", "Error",0); }
 }
