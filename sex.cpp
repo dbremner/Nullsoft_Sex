@@ -96,8 +96,8 @@ static BOOL InitApplication(HINSTANCE hInstance)
 
 static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-	DWORD style = 0;
-	DWORD exStyle = WS_EX_TOOLWINDOW;
+    const DWORD style = 0;
+    const DWORD exStyle = WS_EX_TOOLWINDOW;
 	HWND hwnd = CreateWindowEx(exStyle,app_name,app_name,style,0,0,1,1,NULL, NULL,hInstance,NULL);
 	
 	if (!hwnd) return FALSE;
