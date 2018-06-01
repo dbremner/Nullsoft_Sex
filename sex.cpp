@@ -123,7 +123,6 @@ static void OnPaint(HWND hwnd);
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	CWindow wnd{hwnd};
 	switch (uMsg) 
 	{
 		HANDLE_MSG(hwnd,WM_CREATE,OnCreate);
