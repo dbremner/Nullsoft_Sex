@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInst*/, LPSTR /*lpszCmd
 
 static BOOL InitApplication(HINSTANCE hInstance)
 {
-	WNDCLASS wc = {0};	
+	WNDCLASS wc;	
 	wc.style = CS_DBLCLKS|CS_VREDRAW|CS_HREDRAW;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
